@@ -1,0 +1,15 @@
+//Includes:
+//SPACES: Mary Ann
+//DASHES: Mary-Ann
+//APOSTROPHE: O'Connor
+//COMBINATIONS: Mary-Ann O'Connor
+//Does not inlcude \/?|():;.
+//Does not include comma ,
+
+REGEXP_EXTRACT([Patient Name],"([a-zA-Z\s-']+)")
+
+//First and Last name
+//Includes spaces, dashes, apostrophe, and COMMA
+//O'Connor, Mary-Ann
+//Does not inlcude \/?|():;.
+REGEXP_EXTRACT([Patient Name],"([a-zA-Z\s-',]+)")
