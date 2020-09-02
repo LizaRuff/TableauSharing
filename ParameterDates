@@ -1,0 +1,42 @@
+****STEP 1 = Determine report END date
+[*-*ReportEndDate]
+//Report ends on the last day of the previous month
+DATEADD('day',-1,
+DATETRUNC('month',TODAY()))
+
+****STEP 2 = Set up parameter
+[Select Time Frame]
+3M = 3 months
+6M = 6 months
+12M = 12 months
+CFYTD = CFYTD
+PrevFY = PrevFY
+
+****STEP 3 = Create FY dates based on report end date
+[*-*FY Date]
+IF 
+MONTH([*-*ReportEndDate]) = 1 THEN 6 ELSEIF 
+MONTH([*-*ReportEndDate]) = 2 THEN 7 ELSEIF 
+MONTH([*-*ReportEndDate]) = 3 THEN 8 ELSEIF 
+MONTH([*-*ReportEndDate]) = 4 THEN 9 ELSEIF 
+MONTH([*-*ReportEndDate]) = 5 THEN 10 ELSEIF 
+MONTH([*-*ReportEndDate]) = 6 THEN 11 ELSEIF 
+MONTH([*-*ReportEndDate]) = 7 THEN 0 ELSEIF 
+MONTH([*-*ReportEndDate]) = 8 THEN 1 ELSEIF 
+MONTH([*-*ReportEndDate]) = 9 THEN 2 ELSEIF 
+MONTH([*-*ReportEndDate]) = 10 THEN 3 ELSEIF 
+MONTH([*-*ReportEndDate]) = 11 THEN 4 ELSEIF 
+MONTH([*-*ReportEndDate]) = 12 THEN 5
+ELSE NULL END
+
+****STEP 4 = Create time frame calculation and drop into FILTERS card
+//Replace [TARGET DATE] with d/c, admit, or desired date from data source
+[_Select Time Frame TRUE]
+CASE 
+[Select Time Frame]
+WHEN "3M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=2 THEN TRUE END)
+WHEN "6M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=5 THEN TRUE END)
+WHEN "12M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=11 THEN TRUE END)
+WHEN 'PrevFY' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY Date]+1 and  DATEDIFF('month',[Order Date],[*-*ReportEndDate])<= [*-*FY Date]+12 then TRUE END
+WHEN 'CFYTD' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[Order Date],[*-*ReportEndDate])<= [*-*FY Date] then TRUE END
+ELSE FALSE END
