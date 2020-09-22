@@ -34,9 +34,12 @@ ELSE NULL END
 [_Select Time Frame TRUE]
 CASE 
 [Select Time Frame]
-WHEN "3M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=2 THEN TRUE END)
-WHEN "6M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=5 THEN TRUE END)
-WHEN "12M" THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=11 THEN TRUE END)
-WHEN 'PrevFY' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY Date]+1 and  DATEDIFF('month',[Order Date],[*-*ReportEndDate])<= [*-*FY Date]+12 then TRUE END
-WHEN 'CFYTD' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[Order Date],[*-*ReportEndDate])<= [*-*FY Date] then TRUE END
+WHEN '3M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=2 THEN TRUE END)
+WHEN '6M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=5 THEN TRUE END)
+WHEN '12M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=11 THEN TRUE END)
+WHEN 'PrevFY' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY Date]+1 and  DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])<= [*-*FY Date]+12 then TRUE END
+WHEN 'CFYTD' then IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])<= [*-*FY Date] then TRUE END
 ELSE FALSE END
+
+
+
