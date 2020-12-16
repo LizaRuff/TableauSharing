@@ -1,0 +1,52 @@
+
+
+**EndOfReport DATE
+DATE(
+IF 
+DATEPART('day',TODAY())<5
+THEN
+DATEADD('day',-1,DATEADD('month',-2,DATETRUNC('month',TODAY())))
+ELSE
+DATEADD('day',-1,DATEADD('month',-1,DATETRUNC('month',TODAY())))
+END)
+
+*-*Trunc Month Start Date
+DATE(DATETRUNC('month',[Procedure Date]))
+
+*-*Trunc Month End date
+DATE( //Force format to DATE not DATETIME
+    DATEADD('day',-1, //Subtract a day. Example: 01/01/2021 --> 12/31/2020
+        DATEADD('month',1,//Add a month. Example: 12/01/2020 --> 01/01/20201
+
+//*-*-*-*-*->START HERE: 
+            DATETRUNC('month',[Procedure Date])))) //Truncate procedure date to beginning of month. Exmple: 12/15/2020 --> 12/01/2020
+            
+IF 
+MONTH([**EndOfReport]) = 1 THEN 6 ELSEIF 
+MONTH([**EndOfReport]) = 2 THEN 7 ELSEIF 
+MONTH([**EndOfReport]) = 3 THEN 8 ELSEIF 
+MONTH([**EndOfReport]) = 4 THEN 9 ELSEIF 
+MONTH([**EndOfReport]) = 5 THEN 10 ELSEIF 
+MONTH([**EndOfReport]) = 6 THEN 11 ELSEIF 
+MONTH([**EndOfReport]) = 7 THEN 0 ELSEIF 
+MONTH([**EndOfReport]) = 8 THEN 1 ELSEIF 
+MONTH([**EndOfReport]) = 9 THEN 2 ELSEIF 
+MONTH([**EndOfReport]) = 10 THEN 3 ELSEIF 
+MONTH([**EndOfReport]) = 11 THEN 4 ELSEIF 
+MONTH([**EndOfReport]) = 12 THEN 5
+ELSE NULL END        
+            
+            
+            
+ _CEA Select Timeframe TRUE           
+CASE [Select Time Frame]
+WHEN '6M' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 AND DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) <= 5 THEN TRUE END
+WHEN '12M' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 and DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) <= 11 then TRUE END
+WHEN 'CFYTD' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 and DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) <= [*-*CFYTD] then TRUE END
+WHEN 'CFYTD' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 and DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) <= [*-*CFYTD] then TRUE END
+WHEN 'ALL' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 AND [Procedure Date] > DATE("06/30/2017") THEN TRUE END
+WHEN 'CUSTOM' then if DATEDIFF('month',[Procedure Date],[**EndOfReport DATE]) >= 0 AND
+        [Procedure Date] >= [*-*Trunc Month Start Date Parameter] AND [Procedure Date] <= [*-*Trunc Month End date Parameter] THEN TRUE END
+ELSE FALSE
+END
+            
