@@ -1,0 +1,58 @@
+            
+****STEP 1 = Determine report END date
+*-*ReportEndDate
+//Report ends on the last day of the previous month
+DATE(DATEADD('day',-1,DATETRUNC('month',TODAY())))
+
+****STEP 2 = Create Field for Start Date Paramter
+*-*Trunc Month Start Date
+DATE(DATETRUNC('month',[Procedure Date]))
+
+****STEP 3 = Create Field for End Date Paramter
+*-*Trunc Month End date
+DATE( //Force format to DATE not DATETIME
+    DATEADD('day',-1, //Subtract a day. Example: 01/01/2021 --> 12/31/2020
+        DATEADD('month',1,//Add a month. Example: 12/01/2020 --> 01/01/20201
+            DATETRUNC('month',[Procedure Date])))) //Truncate procedure date to beginning of month. Exmple: 12/15/2020 --> 12/01/2020
+
+****STEP 4 = Set up parameter
+Select Time Frame
+3M = 3 months
+6M = 6 months
+12M = 12 months
+CFYTD = CFYTD
+PrevFY = PrevFY
+CUSTOM = Custom
+
+****STEP 5 = Create FY dates based on report end date
+*-*FY Date
+IF 
+MONTH([*-*ReportEndDate]) = 1 THEN 6 ELSEIF 
+MONTH([*-*ReportEndDate]) = 2 THEN 7 ELSEIF 
+MONTH([*-*ReportEndDate]) = 3 THEN 8 ELSEIF 
+MONTH([*-*ReportEndDate]) = 4 THEN 9 ELSEIF 
+MONTH([*-*ReportEndDate]) = 5 THEN 10 ELSEIF 
+MONTH([*-*ReportEndDate]) = 6 THEN 11 ELSEIF 
+MONTH([*-*ReportEndDate]) = 7 THEN 0 ELSEIF 
+MONTH([*-*ReportEndDate]) = 8 THEN 1 ELSEIF 
+MONTH([*-*ReportEndDate]) = 9 THEN 2 ELSEIF 
+MONTH([*-*ReportEndDate]) = 10 THEN 3 ELSEIF 
+MONTH([*-*ReportEndDate]) = 11 THEN 4 ELSEIF 
+MONTH([*-*ReportEndDate]) = 12 THEN 5
+ELSE NULL END
+
+****STEP 6 = Create time frame calculation and drop into FILTERS card
+_Select Time Frame TRUE
+//Replace [TARGET DATE] with d/c, admit, or desired date from data source
+//Replace FY19 with appropriate FY
+CASE 
+[Select Time Frame]
+WHEN '3M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=2 THEN TRUE END)
+WHEN '6M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=5 THEN TRUE END)
+WHEN '12M' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate]) <=11 THEN TRUE END)
+WHEN 'CFYTD' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])<= [*-*FY Date] then TRUE END)
+WHEN 'PrevFY' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY Date]+1 AND DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])<= [*-*FY Date]+12 THEN TRUE END)
+WHEN 'FY19' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY Date]+13 AND DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])<= [*-*FY Date]+24 THEN TRUE END)
+WHEN 'CUSTOM' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and [TARGET DATE] >= [Start Date] AND DATETRUNC('month',[TARGET DATE]) <= [End Date] THEN TRUE END)
+ELSE FALSE END
+            
