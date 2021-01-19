@@ -1,0 +1,17 @@
+Create a Row Number for each entry
+*-*ROW NUMBER
+{ PARTITION [MRN],[MBSAQIP - Date of Procedure]:{ ORDERBY  [MBSAQIP - Date of Procedure] DESC: ROW_NUMBER()}}
+
+Use the row number to exclude duplicates
+
+*-*ONE
+IF 
+[*-*ROW NUMBER] > 1
+OR
+ISNULL([MRN]) 
+THEN 0 ELSE 1 END
+
+*-*FIXED LOD
+{ FIXED [MRN], [MBSAQIP - Date of Procedure]:MIN([*-*ONE])}
+
+
