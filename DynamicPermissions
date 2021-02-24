@@ -1,0 +1,25 @@
+//Create a physician filter using the Server --> Create User Filter function
+//[Surgeon Filter]
+//Match server name to surgeon name
+
+//Create a facility filter using the Server --> Create User Filter function
+//[Facility Filter]
+//Add all manager/director to respective facilities
+
+//Create calculated field for user filter
+_User-Filter TRUE
+ISMEMBEROF('MHHS Chief Medical Officers') OR 
+ISMEMBEROF('MHHS SVP CEOs Hospital') OR 
+ISMEMBEROF('MHHS VP Nursing') OR 
+ISMEMBEROF('MHHS VP Operations Hospital') OR 
+ISMEMBEROF('QPSIC Quality Directors') OR 
+ISMEMBEROF('QPSIC Clinical Data Management') OR
+ISMEMBEROF('Enterprise QPSIC') OR
+[Surgeon Filter] OR
+[Facility Filter]
+
+//Apply filter to sheet and ADD TO CONTEXT
+
+//New physicians will be automatically added to view 
+//New physicians will NOT have permission to view data until 
+//they are added to the [Surgeon Filter]
