@@ -1,0 +1,20 @@
+IF 
+MONTH(DATETRUNC('quarter',[Operation Date]))  = 1
+THEN "Q3-FY" + STR(YEAR([Operation Date]))
+ELSEIF 
+MONTH(DATETRUNC('quarter',[Operation Date]))  = 4
+THEN "Q4-FY" + STR(YEAR([Operation Date]))
+ELSEIF 
+MONTH(DATETRUNC('quarter',[Operation Date]))  = 7
+THEN "Q1-FY" + STR(YEAR([Operation Date])+1)
+ELSEIF 
+MONTH(DATETRUNC('quarter',[Operation Date]))  = 10
+THEN "Q2-FY" + STR(YEAR([Operation Date])+1)
+END
+
+
+IF MONTH([Operation Date]) > 6
+THEN "FY" + STR(YEAR([Operation Date])+1)
+ELSE "FY" + STR(YEAR([Operation Date]))
+END
+
