@@ -1,28 +1,62 @@
             
-****STEP 1 = Determine report END date
+****STEP 1 = Determine report END date - Select best method
 *-*ReportEndDate
 //Report ends on the last day of the previous month
 DATE(DATEADD('day',-1,DATETRUNC('month',TODAY())))
 
+// OR Report ends on last day of maximum date value
+{MAX( //MAX of the TABLE - LOD calculation
+DATE( //Force format to DATE not DATETIME
+    DATEADD('day',-1, //Subtract a day. Example: 01/01/2021 --> 12/31/2020
+        DATEADD('month',1,//Add a month. Example: 12/01/2020 --> 01/01/20201
+            DATETRUNC('month',[TARGET DATE]))))
+
+)}
+
 ****STEP 2 = Create Field for Start Date Paramter
 *-*Trunc Month Start Date
-DATE(DATETRUNC('month',[Procedure Date]))
+DATE(DATETRUNC('month',[TARGET DATE]))
 
 ****STEP 3 = Create Field for End Date Paramter
 *-*Trunc Month End date
 DATE( //Force format to DATE not DATETIME
     DATEADD('day',-1, //Subtract a day. Example: 01/01/2021 --> 12/31/2020
         DATEADD('month',1,//Add a month. Example: 12/01/2020 --> 01/01/20201
-            DATETRUNC('month',[Procedure Date])))) //Truncate procedure date to beginning of month. Exmple: 12/15/2020 --> 12/01/2020
+            DATETRUNC('month',[TARGET DATE])))) //Truncate procedure date to beginning of month. Exmple: 12/15/2020 --> 12/01/2020
 
-****STEP 4 = Set up parameter
-Select Time Frame
+****STEP 4 = Set up parameters
+**-**-**-**-**-**-**-**-**
+[Select Time Frame]
+Data type: String
+Current Value: 12M
+Value when workbook opens: 12M
+Allowable values: LIST
+-------- values on left of equal sign must be precise
 3M = 3 months
 6M = 6 months
 12M = 12 months
 CFYTD = CFYTD
 PrevFY = PrevFY
 CUSTOM = Custom
+
+**-**-**-**-**-**-**-**-**
+[Start Date]
+Data type: Date
+Current Value: Jan 2018 //Select earliest date on list
+Value when workbook opens: Current Value
+Display format: mmm yyyy //Example - Jan 2018
+Allowable values: LIST
+When worbook opens: *-*Trunc Month Start Date
+
+**-**-**-**-**-**-**-**-**
+[End Date]
+Data type: Date
+Current Value: Dec 2020 //Select latest date on list
+Value when workbook opens: *-*ReportEndDate
+Display format: mmm yyyy //Example - Jan 2018
+Allowable values: LIST
+When worbook opens: *-*Trunc Month End Date
+
 
 ****STEP 5 = Create FY dates based on report end date
 *-*FY Date
@@ -56,3 +90,8 @@ WHEN 'FY19' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= [*-*FY
 WHEN 'CUSTOM' THEN (IF DATEDIFF('month',[TARGET DATE],[*-*ReportEndDate])>= 0 and [TARGET DATE] >= [Start Date] AND DATETRUNC('month',[TARGET DATE]) <= [End Date] THEN TRUE END)
 ELSE FALSE END
             
+****STEP 7 = Add _Select Time Frame TRUE calculation to approprirate sheet(s)
+
+****STEP 8 = Add sheets to dashboard, add parameters to dashboard
+
+
