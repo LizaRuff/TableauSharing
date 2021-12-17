@@ -1,0 +1,49 @@
+For Dates formatted in YYYYMMDD
+And times in the format of M MM HMM and HHMM
+
+
+MAKEDATETIME(
+MAKEDATE(
+   INT(LEFT(STR([UnformattedDate]),4)),
+   INT(MID(STR([UnformattedDate]),5,2)),
+   INT(RIGHT(STR([UnformattedDate]),2))
+        )
+,
+MAKETIME(
+            (IF LEN(STR([Unformattedtime])) < 3
+            THEN 0
+            ELSEIF LEN(STR([Unformattedtime])) < 4
+            THEN INT(LEFT(STR([Unformattedtime]),1))
+            ELSE INT(LEFT(STR([Unformattedtime]),2))
+            END),
+            (IF LEN(STR([Unformattedtime])) < 2
+            THEN INT(RIGHT(STR([Unformattedtime]),1))
+            ELSE INT(RIGHT(STR([Unformattedtime]),2))
+            END),0
+        )  
+       
+)
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*
+EXPLANATION
+MAKEDATETIME( //MakeDateTime format = Date,Time
+MAKEDATE( //Required format = int, int, int as year, month, day
+   INT(LEFT(STR([UnformattedDate]),4)), //Returns Year
+   INT(MID(STR([UnformattedDate]),5,2)), //Returns Month
+   INT(RIGHT(STR([UnformattedDate]),2)) //Returns day
+        )
+,
+MAKETIME( //Maketime format = int, int, int as hour, min, second (seconds in required)
+            (IF LEN(STR([Unformattedtime])) < 3
+            THEN 0
+            ELSEIF LEN(STR([Unformattedtime])) < 4
+            THEN INT(LEFT(STR([Unformattedtime]),1))
+            ELSE INT(LEFT(STR([Unformattedtime]),2))
+            END), //returns hour
+            (IF LEN(STR([Unformattedtime])) < 2 //Returns the minutes
+            THEN INT(RIGHT(STR([Unformattedtime]),1))
+            ELSE INT(RIGHT(STR([Unformattedtime]),2))
+            END),0 // Zero Seconds
+        )  
+       
+)
