@@ -1,0 +1,7 @@
+
+Format 9 digit MRN
+LEFT("000000000",9 - LEN(STR([UnformattedMRN]))) + STR([UnformattedMRN])
+
+Format 6 digit MRN
+LEFT("000000",6 - LEN(STR([UnformattedMRN]))) + STR([UnformattedMRN])
+
