@@ -1,4 +1,4 @@
-T**The maximum lenght of the Unformatted MRN must be less than or equal to the desired lenght**
+**The maximum length of the Unformatted MRN must be less than or equal to the desired length**
 To format to a 9 digit MRN, the length must be <= 9
 To format to a 6 digit MRN, the length must be <= 6
 
