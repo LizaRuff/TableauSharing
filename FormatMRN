@@ -1,7 +1,30 @@
+T**The maximum lenght of the Unformatted MRN must be less than or equal to the desired lenght**
+To format to a 9 digit MRN, the length must be <= 9
+To format to a 6 digit MRN, the length must be <= 6
 
-Format 9 digit MRN
+Format 9 digit MRN - Only works if there are no special characters (,./\<>?!-+ or space)
 LEFT("000000000",9 - LEN(STR([UnformattedMRN]))) + STR([UnformattedMRN])
+123456 = 000123456
+<12345> = 00<12345>
 
-Format 6 digit MRN
+Format 6 digit MRN - Only works if there are no special characters (,./\<>?!-+ or space)
 LEFT("000000",6 - LEN(STR([UnformattedMRN]))) + STR([UnformattedMRN])
+1236 = 001236
 
+Format 9 digit MRN - Clean with Regex: inlcude only numbers
+LEFT("000000000",9 - LEN(STR(REGEXP_EXTRACT([UnformattedMRN],'([0-9]+)')))) + STR(REGEXP_EXTRACT([UnformattedMRN],'([0-9]+)'))
+<12345> = 000012345
+123ABC = 000000123
+123-ABC = 000000123
+
+Format 9 digit MRN - Clean with Regex: inlcude only numbers and letters
+LEFT("000000000",9 - LEN(STR(REGEXP_EXTRACT([UnformattedMRN],'([A-Z0-9]+)')))) + STR(REGEXP_EXTRACT([UnformattedMRN],'([A-Z0-9]+)'))
+<12345> = 000012345
+123ABC = 000123ABC
+123-ABC = 000000123
+
+Format 9 digit MRN - Clean with Regex: inlcude only numbers. letters and dash
+LEFT("000000000",9 - LEN(STR(REGEXP_EXTRACT([UnformattedMRN],'([A-Z0-9\-]+)')))) + STR(REGEXP_EXTRACT([UnformattedMRN],'([A-Z0-9\-]+)'))
+<12345> = 000012345
+123ABC = 000123ABC
+123-ABC = 00123-ABC
