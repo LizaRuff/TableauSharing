@@ -1,0 +1,23 @@
+1.	Bring in data from - should include duplicates
+    01/22 to 6/22 
+    02/22 to 07/22
+    Name the files with a name that corresponds to the last month of data OR to the month the data was pulled: 202206FileName.xlsx
+
+2.	Union the two files
+
+3.	Create a calculated field using the file name to create a date [FileDate]
+    FileDate
+    LEFT(STR([Path]),4) + '-' +
+    MID(STR([Path]),5,2) + '-' + '01'
+
+4.	Create a Row Number for each entry
+    *-*ROW NUMBER
+    { PARTITION [*-*SortID], [FileDate]:{ ORDERBY  [FileDate] DESC: ROW_NUMBER()}}
+
+5.	Use the row number to exclude duplicates
+    *-*ONE
+    IF 
+    [*-*ROW NUMBER] > 1
+    OR
+    ISNULL([*-*SortID]) 
+    THEN 0 ELSE 1 END
