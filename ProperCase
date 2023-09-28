@@ -1,0 +1,18 @@
+Proper Case in Tableau without function
+
+
+UPPER(LEFT(SPLIT([HospitalName],' ',1),1)) +
+
+LOWER(MID(SPLIT([HospitalName],' ',1),2,20)) +
+
+' ' +
+
+UPPER(LEFT(SPLIT([HospitalName],' ',2),1)) +
+
+LOWER(MID(SPLIT([HospitalName],' ',2),2,20)) +
+
+' ' +
+
+UPPER(LEFT(SPLIT([HospitalName],' ',3),1)) +
+
+LOWER(MID(SPLIT([HospitalName],' ',3),2,20))
