@@ -1,0 +1,36 @@
+Cleans up name from ALL CAPS or all small or Proper Case
+**Returns the first 6 names that are divided by spaces
+
+// SMITH, JANE or smith, jane --> Smith, Jane 
+// JOHNSON, MARK E --> Johnson, Mark E
+// LAST NAME, FIRST1 FIRST2 FIRST3 FIRST4 FIRST5 FIRST6 --> Last Name, First1 First2 First3 First4
+// LAST-NAME, FIRST1 FIRST2 FIRST3 FIRST4 FIRST5 FIRST6 --> Last-Name, First1 First2 First3 First4 First5
+// LAST-NAME, FIRST1 FIRST2 FIRST3 FIRST4 FIRST5-FIRST6 --> Last-Name, First1 First2 First3 First4 First5-First6
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+Step 1: Change first letter of all names to capital, all other letters to small.
+[ProperCaseVisitProv]
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',1),1)) +
+LOWER(MID(SPLIT([Visit Prov Name],' ',1),2,20)) +
+' ' +
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',2),1)) +
+LOWER(MID(SPLIT([Visit Prov Name],' ',2),2,20)) +
+' ' +
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',3),1)) +
+LOWER(MID(SPLIT([Loc Name],' ',3),2,20)) +
+' ' +
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',4),1)) +
+LOWER(MID(SPLIT([Visit Prov Name],' ',4),2,20)) +
+' ' +
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',5),1)) +
+LOWER(MID(SPLIT([Visit Prov Name],' ',5),2,20)) +
+' ' +
+UPPER(LEFT(SPLIT([Visit Prov Name],' ',6),1)) +
+LOWER(MID(SPLIT([Visit Prov Name],' ',6),2,20))
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Step 2: Second correction for capitalization after hyphen
+[ Visit Provider]
+IFNULL(
+REGEXP_REPLACE([ProperCaseVisitProv],'\-([a-zA-Z])',
+    '-' + UPPER(REGEXP_EXTRACT([ProperCaseVisitProv],'\-([a-zA-Z])'))), [ProperCaseVisitProv])
