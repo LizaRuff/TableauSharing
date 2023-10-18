@@ -1,0 +1,11 @@
+1. Create a calculation with a boolean result for access to names
+[_ProviderPermissions]
+  ISMEMBEROF('Group A') OR
+  ISMEMBEROF('Group B')
+
+2. Create a calculated field that uses groups to blind physician names
+IF 
+[_ProviderPermissions]
+THEN
+[Visit Prov Name]
+ELSE ' - Data Blinded - ' END
