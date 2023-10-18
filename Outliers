@@ -1,0 +1,45 @@
+********Create Parameter
+Include Outliers
+Boolean
+True = Yes
+False = No
+
+
+********Create Median Calculation
+Patient Vent time Median
+{ MEDIAN( { FIXED [Account Number] : SUM( [_VENT IntubationTimeHr.0] ) } ) }
+
+
+********Create StandDev Calc
+Patient Vent time StandDev
+{ STDEV( { FIXED [Account Number] : SUM( [_VENT IntubationTimeHr.0] ) } ) }
+
+
+********Create Outlier Calculation
+*-*Vent Outliers
+IF [_VENT IntubationTimeHr.0] > ([Patient Vent time Median]+[Patient Vent time StandDev]) THEN
+    "Outlier"
+ELSE
+    "Expected"
+END
+
+
+********Carete Filter for Outliers
+_Filter Include Outliers
+IF [Include Outliers] THEN //IF TRUE THEN
+    "Yes"
+ELSE
+    IF [*-*Vent Outliers] = "Outlier" THEN
+        "No"
+    ELSE
+        "Yes"
+    END
+END
+
+
+*******Expected High
+[Patient Vent time Median] + [Patient Vent time StandDev]
+
+
+******Disclaimer
++ Outlier: the median vent time of the population plus one (1) standard deviation.
