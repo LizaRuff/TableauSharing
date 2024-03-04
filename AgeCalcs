@@ -1,0 +1,29 @@
+Calculating age in Tableau Using DATEDIFF('year',[Birth Date],[Start Dttm]) 
+may result in incorrect values if the event happens prior to the birth date of that year.
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+#AGEinYEARS
+{ FIXED [*-*UniqueLineID]:MIN(
+IF 
+DATEDIFF('year',[Birth Date],[Start Dttm]) < 1
+THEN 0
+ELSEIF 
+DATEADD('year',DATEDIFF('month',[Birth Date],[Start Dttm]),[Birth Date]) > [Start Dttm]
+THEN 
+DATEDIFF('year',[Birth Date],[Start Dttm]) - 1
+ELSE DATEDIFF('year',[Birth Date],[Start Dttm])
+END)}
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+#AGEinMONTHS
+{ FIXED [*-*UniqueLineID]:MIN(
+IF 
+DATEDIFF('month',[Birth Date],[Start Dttm]) < 1
+THEN 0
+ELSEIF 
+DATEADD('month',DATEDIFF('month',[Birth Date],[Start Dttm]),[Birth Date]) >= [Start Dttm]
+THEN 
+DATEDIFF('month',[Birth Date],[Start Dttm]) - 1
+ELSE DATEDIFF('month',[Birth Date],[Start Dttm])
+END)}
